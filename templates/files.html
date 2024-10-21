@@ -1,10 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}文件列表{% endblock %}
+
+{% block content %}
+    <h2>文件列表</h2>
+    <ul>
+        {% for file in files %}
+            <li>{{ file }}</li>
+        {% else %}
+            <li>没有文件</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

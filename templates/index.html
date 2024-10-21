@@ -1,10 +1,90 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{##}
+{#{% extends "base.html" %}#}
+{##}
+{#{% block title %}Cloud disk management system{% endblock %}#}
+{#{% block content %}#}
+{#    <body>#}
+{#    <h1>Cloud disk management system</h1>#}
+{##}
+{##}
+{#    <!-- 显示闪存消息 -->#}
+{#    {% with messages = get_flashed_messages() %}#}
+{#        {% if messages %}#}
+{#            <ul>#}
+{#                {% for message in messages %}#}
+{#                    <li>{{ message }}</li>#}
+{#                {% endfor %}#}
+{#            </ul>#}
+{#        {% endif %}#}
+{#    {% endwith %}#}
+{##}
+{#    <!-- 文件上传表单 -->#}
+{#    <form action="/upload" method="post" enctype="multipart/form-data">#}
+{#        <input type="file" name="file">#}
+{#        <input type="submit" value="upload file">#}
+{#    </form>#}
+{##}
+{#    <h2>Document list</h2>#}
+{#    <ul>#}
+{#        {% for file in files %}#}
+{#            <li>#}
+{#                {{ file }}#}
+{#                <a href="/download/{{ file }}">download</a>#}
+{#                <a href="/delete/{{ file }}" onclick="return confirm('确定删除该文件吗？')">删除</a>#}
+{#            </li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
+{#</body>#}
+{#{% endblock %}#}
+{#{% extends "base.html" %}#}
+{##}
+{#{% block title %}主页{% endblock %}#}
+{##}
+{#{% block content %}#}
+{#    <h1>欢迎，{{ username }}!</h1>#}
+{#    <p>您已经成功登录。</p>#}
+{#    <h1>Cloud disk management system</h1>#}
+{##}
+{##}
+{#    <!-- 显示闪存消息 -->#}
+{#    {% with messages = get_flashed_messages() %}#}
+{#        {% if messages %}#}
+{#            <ul>#}
+{#                {% for message in messages %}#}
+{#                    <li>{{ message }}</li>#}
+{#                {% endfor %}#}
+{#            </ul>#}
+{#        {% endif %}#}
+{#    {% endwith %}#}
+{##}
+{#    <!-- 文件上传表单 -->#}
+{#    <form action="/upload" method="post" enctype="multipart/form-data">#}
+{#        <input type="file" name="file">#}
+{#        <input type="submit" value="upload file">#}
+{#    </form>#}
+{##}
+{#    <h2>Document list</h2>#}
+{#    <ul>#}
+{#        {% for file in files %}#}
+{#            <li>#}
+{#                {{ file }}#}
+{#                <a href="/download/{{ file }}">download</a>#}
+{#                <a href="/delete/{{ file }}" onclick="return confirm('确定删除该文件吗？')">删除</a>#}
+{#            </li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
+{#{% endblock %}#}
+{% extends "base.html" %}
+
+{% block title %}主页{% endblock %}
+
+{% block content %}
+    <h1>欢迎，{{ username }}!</h1>
+    <p>您已经成功登录。</p>
+
+    <!-- 文件上传表单 -->
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value="上传文件">
+    </form>
+{% endblock %}
