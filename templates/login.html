@@ -3,19 +3,26 @@
 {% block title %}登录页面{% endblock %}
 
 {% block content %}
-    <h1>用户登录</h1>
-
-    <form action="{{ url_for('login') }}" method="POST">
-        <div>
-            <label for="username">用户名：</label>
-            <input type="text" name="username" id="username" required>
-        </div>
-        <div>
-            <label for="password">密码：</label>
-            <input type="password" name="password" id="password" required>
-        </div>
-        <div>
-            <input type="submit" value="登录">
-        </div>
-    </form>
+    <div class="login-container">
+        <label class="login-title">用户登录</label>
+        <br>
+        <br>
+        <form action="{{ url_for('login') }}" method="POST">
+            <div class="input-group">
+                <label for="username"><span class="input-hint">用户名：</span></label>
+                <input type="text" name="username" id="username" required>
+            </div>
+            <br>
+            <br>
+            <div class="input-group">
+                <label for="password"><span class="input-hint">密码：</span></label>
+                <input type="password" name="password" id="password" required>
+            </div>
+            <br>
+            <br>
+            <div class="input-group">
+                <input type="submit" value="登录">
+            </div>
+        </form>
+    </div>
 {% endblock %}
