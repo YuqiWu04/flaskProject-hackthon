@@ -76,15 +76,20 @@
 {#{% endblock %}#}
 {% extends "base.html" %}
 
-{% block title %}主页{% endblock %}
+{% block title %}HOME{% endblock %}
 
 {% block content %}
-    <h1>欢迎，{{ username }}!</h1>
-    <p>您已经成功登录。</p>
+    <div>
+    <h1 class="welcome">Welcome，{{ username }}!!!</h1>
+    <p class="sentence">Already!</p>
 
     <!-- 文件上传表单 -->
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="file">
-        <input type="submit" value="上传文件">
+    <form id = "up1" action="/upload" method="post" enctype="multipart/form-data">
+        <input id = "select_file" type="file" name="file" value="Please select files" required>
+        <input id= "sub" type="submit" value="upload the file" required>
     </form>
+    <ul class="file_list">
+    <a  href="{{ url_for('file_list') }}">File list</a>
+    </ul>
+    </div>
 {% endblock %}

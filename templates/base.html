@@ -7,11 +7,11 @@
 </head>
 <body>
 <nav>
-    <a href="{{ url_for('index') }}">主页</a>
+    <a href="{{ url_for('index') }}">HOME</a>
     {% if 'username' in session %}
-        <a href="{{ url_for('logout') }}">登出</a>
+        <a href="{{ url_for('logout') }}">Log out</a>
     {% else %}
-        <a href="{{ url_for('login') }}">登录</a>
+        <a href="{{ url_for('login') }}">Log in</a>
     {% endif %}
 </nav>
 

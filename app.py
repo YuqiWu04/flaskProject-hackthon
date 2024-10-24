@@ -2,7 +2,7 @@
 # import boto3
 # from flask import Flask, request, redirect, render_template, flash, url_for,session
 # from config import Config
-import boto3
+# import boto3
 from botocore.client import Config as BotoConfig
 # app = Flask(__name__)
 # app.config.from_object(Config)
@@ -83,19 +83,21 @@ from botocore.client import Config as BotoConfig
 #
 # if __name__ == '__main__':
 #     app.run(debug=True)
-from flask import Flask, request, redirect, render_template, flash, url_for, session
+from flask import Flask, request, redirect, render_template, flash, url_for, session, send_file
 import os
 import boto3
 from botocore.client import Config as BotoConfig
 from werkzeug.utils import secure_filename  # 确保文件名安全
 from config import Config
+import qrcode
+
 app = Flask(__name__)
 app.config.from_object(Config)  # 从配置文件加载配置
 app.secret_key = os.urandom(24)
 
 # 假设的用户数据库
 users = {
-    "admin": "wyq2004",  # 用户名: 密码
+    "1111": "1111",  # 用户名: 密码
     "Wuyuqi": "1314520"
 }
 # 配置boto3客户端，连接Wasabi
@@ -117,10 +119,10 @@ def login():
         # 验证用户名和密码
         if username in users and users[username] == password:
             session['username'] = username  # 登录成功，保存会话信息
-            flash('登录成功！')
+            flash('Successfully logged in')
             return redirect(url_for('index'))
         else:
-            flash('用户名或密码错误，请重试。')
+            flash('Error!')
             return redirect(url_for('login'))
 
     # 如果是 GET 请求，则显示登录页面
@@ -138,7 +140,7 @@ def index():
 @app.route('/logout')
 def logout():
     session.pop('username', None)
-    flash('您已成功登出。')
+    flash('Successfully logged out')
     return redirect(url_for('login'))
 
 
@@ -147,17 +149,30 @@ def logout():
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
-        flash('没有选择文件')
+        flash('Please select a file!')
         return redirect(request.url)
 
     file = request.files['file']
     if file.filename == '':
-        flash('没有选择文件')
+        flash('Please select a file!')
         return redirect(request.url)
 
     if file:
         # 确保文件名安全
         filename = secure_filename(file.filename)
+        if file:
+            # 确保文件名安全
+            filename = secure_filename(file.filename)
+
+            # 保存文件到指定目录
+            directory = '/Users/yukey/Desktop/files backup'
+            # 创建目录（如果不存在的话）
+            os.makedirs(directory, exist_ok=True)
+
+            # 保存文件
+            file_path = os.path.join(directory, filename)
+            file.save(file_path)  # 保存文件到指定路径
+
         # 上传到Wasabi云存储
         try:
             s3_client.upload_fileobj(
@@ -166,22 +181,65 @@ def upload_file():
                 filename,
                 ExtraArgs={'ACL': 'public-read'}  # 设置文件权限为公开读取
             )
-            flash(f'文件 {filename} 上传成功！')
+            flash(f'File {filename} upload successful')
         except Exception as e:
-            flash(f'文件上传失败：{str(e)}')
+            flash(f'Fail: {str(e)}')
 
     return redirect(url_for('index'))
 
+
 @app.route('/files')
-def list_files():
+def file_list():
     try:
+        # 获取存储桶中的文件列表
         response = s3_client.list_objects_v2(Bucket=app.config['WASABI_BUCKET_NAME'])
-        files = [item['Key'] for item in response.get('Contents', [])]
-        return render_template('files.html', files=files)
+        files = [obj['Key'] for obj in response.get('Contents', [])]  # 获取文件名
     except Exception as e:
-        flash(f'无法获取文件列表：{str(e)}')
-        return redirect(url_for('index'))
+        flash(f"Error retrieving file list: {str(e)}")
+        files = []
 
+    return render_template('files.html', files=files)
 
+from flask import send_from_directory
+
+@app.route('/download/<filename>')
+def download_file(filename):
+    directory = '/Users/yukey/Desktop/files backup'
+    return send_from_directory(directory, filename, as_attachment=True)
+
+@app.route('/delete/<filename>')
+def delete_file(filename):
+    directory = '/Users/yukey/Desktop/files backup'
+    try:
+        os.remove(os.path.join(directory, filename))
+        flash(f"{filename} already delete")
+    except Exception as e:
+        flash(f"Error: {e}")
+    return redirect(url_for('file_list'))
+
+@app.route('/generate_qr/<filename>')
+def generate_qr(filename):
+    # 生成二维码的内容
+    qr_content = f'https://s3.ap-southeast-1.wasabisys.com/{filename}'  # 确保这里的 URL 是正确的
+
+    # 生成二维码图像
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(qr_content)
+    qr.make(fit=True)
+
+    # 创建一个二维码图像
+    img = qr.make_image(fill='black', back_color='white')
+
+    # 保存二维码图像
+    qr_image_path = os.path.join('static', f'qr_{filename}.png')
+    img.save(qr_image_path)
+
+    # 返回二维码图像的路径
+    return send_file(qr_image_path)
 if __name__ == '__main__':
     app.run(debug=True)

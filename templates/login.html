@@ -1,27 +1,27 @@
 {% extends "base.html" %}
 
-{% block title %}登录页面{% endblock %}
+{% block title %}Log in page{% endblock %}
 
 {% block content %}
     <div class="login-container">
-        <label class="login-title">用户登录</label>
+        <label class="login-title">Sign in</label>
         <br>
         <br>
-        <form action="{{ url_for('login') }}" method="POST">
+        <form class = "loginform" action="{{ url_for('login') }}" method="POST">
             <div class="input-group">
-                <label for="username"><span class="input-hint">用户名：</span></label>
+                <label for="username"><span class="input-hint">Account number：</span></label>
                 <input type="text" name="username" id="username" required>
             </div>
             <br>
             <br>
             <div class="input-group">
-                <label for="password"><span class="input-hint">密码：</span></label>
+                <label for="password"><span class="input-hint">Password：</span></label>
                 <input type="password" name="password" id="password" required>
             </div>
             <br>
             <br>
             <div class="input-group">
-                <input type="submit" value="登录">
+                <input type="submit" value="Log in">
             </div>
         </form>
     </div>
