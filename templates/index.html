@@ -1,140 +1,33 @@
-{##}
-{#{% extends "base.html" %}#}
-{##}
-{#{% block title %}Cloud disk management system{% endblock %}#}
-{#{% block content %}#}
-{#    <body>#}
-{#    <h1>Cloud disk management system</h1>#}
-{##}
-{##}
-{#    <!-- 显示闪存消息 -->#}
-{#    {% with messages = get_flashed_messages() %}#}
-{#        {% if messages %}#}
-{#            <ul>#}
-{#                {% for message in messages %}#}
-{#                    <li>{{ message }}</li>#}
-{#                {% endfor %}#}
-{#            </ul>#}
-{#        {% endif %}#}
-{#    {% endwith %}#}
-{##}
-{#    <!-- 文件上传表单 -->#}
-{#    <form action="/upload" method="post" enctype="multipart/form-data">#}
-{#        <input type="file" name="file">#}
-{#        <input type="submit" value="upload file">#}
-{#    </form>#}
-{##}
-{#    <h2>Document list</h2>#}
-{#    <ul>#}
-{#        {% for file in files %}#}
-{#            <li>#}
-{#                {{ file }}#}
-{#                <a href="/download/{{ file }}">download</a>#}
-{#                <a href="/delete/{{ file }}" onclick="return confirm('确定删除该文件吗？')">删除</a>#}
-{#            </li>#}
-{#        {% endfor %}#}
-{#    </ul>#}
-{#</body>#}
-{#{% endblock %}#}
-{#{% extends "base.html" %}#}
-{##}
-{#{% block title %}主页{% endblock %}#}
-{##}
-{#{% block content %}#}
-{#    <h1>欢迎，{{ username }}!</h1>#}
-{#    <p>您已经成功登录。</p>#}
-{#    <h1>Cloud disk management system</h1>#}
-{##}
-{##}
-{#    <!-- 显示闪存消息 -->#}
-{#    {% with messages = get_flashed_messages() %}#}
-{#        {% if messages %}#}
-{#            <ul>#}
-{#                {% for message in messages %}#}
-{#                    <li>{{ message }}</li>#}
-{#                {% endfor %}#}
-{#            </ul>#}
-{#        {% endif %}#}
-{#    {% endwith %}#}
-{##}
-{#    <!-- 文件上传表单 -->#}
-{#    <form action="/upload" method="post" enctype="multipart/form-data">#}
-{#        <input type="file" name="file">#}
-{#        <input type="submit" value="upload file">#}
-{#    </form>#}
-{##}
-{#    <h2>Document list</h2>#}
-{#    <ul>#}
-{#        {% for file in files %}#}
-{#            <li>#}
-{#                {{ file }}#}
-{#                <a href="/download/{{ file }}">download</a>#}
-{#                <a href="/delete/{{ file }}" onclick="return confirm('确定删除该文件吗？')">删除</a>#}
-{#            </li>#}
-{#        {% endfor %}#}
-{#    </ul>#}
-{#{% endblock %}#}
-{#{% extends "base.html" %}#}
-{##}
-{#{% block title %}HOME{% endblock %}#}
-{##}
-{#{% block content %}#}
-{#    <div>#}
-{#    <h1 class="welcome">Welcome，{{ username }}!!!</h1>#}
-{#    <p class="sentence">Already!</p>#}
-{##}
-{#    <!-- 文件上传表单 -->#}
-{#    <form id = "up1" action="/upload" method="post" enctype="multipart/form-data">#}
-{#        <input id = "select_file" type="file" name="file" value="Please select files" required>#}
-{#        <input id= "sub" type="submit" value="upload the file" required>#}
-{#    </form>#}
-{#    <ul class="file_list">#}
-{#          <h2 id="fi">File lists</h2>#}
-{#    <ul>#}
-{#        {% for file in files %}#}
-{#            <li class = "pie">{{ file }}#}
-{#                <a href="{{ url_for('download_file', filename=file) }}" class ="d" >Download</a>#}
-{#                <a href="{{ url_for('delete_file', filename=file) }}" class="d" onclick="return confirm('Are you sure？')">Delete</a>#}
-{#                <a href="{{ url_for('generate_qr', filename=file) }}" class="d" target="_blank">View code</a>#}
-{##}
-{#            </li>#}
-{#        {% else %}#}
-{#            <li>Nothing</li>#}
-{#        {% endfor %}#}
-{#    </ul>#}
-{#    <a  href="{{ url_for('file_list') }}">File list</a>#}
-{#    </ul>#}
-{#    </div>#}
-{#{% endblock %}#}
+
 {% extends "base.html" %}
 
 {% block title %}Cloud Disk Management System{% endblock %}
 
 {% block content %}
     <div>
-        <h1 class="welcome">Welcome，{{ username }}!!!</h1>
+        <h1 class="welcome">Welcome to Easy Bucket. {{ username }}!!!</h1>
         <p class="sentence">Already logged in!</p>
 
-        <!-- 文件上传表单 -->
+
         <form id="up1" action="/upload" method="post" enctype="multipart/form-data">
             <input id="select_file" type="file" name="file" required>
             <input id="sub" type="submit" value="Upload File">
         </form>
 
-        <!-- 文件列表 -->
+
         <h2 class = "f_l">File List</h2>
         <ul class="file_list">
-{#            {% if files %}#}
+
                 {% for file in files %}
                     <li class="pie">
                         {{ file }}
                         <a href="{{ url_for('download_file', filename=file) }}" class="d">Download</a>
                         <a href="{{ url_for('delete_file', filename=file) }}" class="d" onclick="return confirm('Are you sure?')">Delete</a>
-                        <a href="{{ url_for('generate_qr', filename=file) }}" class="d" target="_blank">View QR Code</a>
+                        <a href="{{ url_for('generate_qr', filename=file) }}" class="d" target="_blank">Share</a>
                     </li>
                 {% endfor %}
 
-{#            {% endif %}#}
+
         </ul>
     </div>
 {% endblock %}
