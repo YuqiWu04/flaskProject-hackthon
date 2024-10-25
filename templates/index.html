@@ -74,22 +74,67 @@
 {#        {% endfor %}#}
 {#    </ul>#}
 {#{% endblock %}#}
+{#{% extends "base.html" %}#}
+{##}
+{#{% block title %}HOME{% endblock %}#}
+{##}
+{#{% block content %}#}
+{#    <div>#}
+{#    <h1 class="welcome">Welcome，{{ username }}!!!</h1>#}
+{#    <p class="sentence">Already!</p>#}
+{##}
+{#    <!-- 文件上传表单 -->#}
+{#    <form id = "up1" action="/upload" method="post" enctype="multipart/form-data">#}
+{#        <input id = "select_file" type="file" name="file" value="Please select files" required>#}
+{#        <input id= "sub" type="submit" value="upload the file" required>#}
+{#    </form>#}
+{#    <ul class="file_list">#}
+{#          <h2 id="fi">File lists</h2>#}
+{#    <ul>#}
+{#        {% for file in files %}#}
+{#            <li class = "pie">{{ file }}#}
+{#                <a href="{{ url_for('download_file', filename=file) }}" class ="d" >Download</a>#}
+{#                <a href="{{ url_for('delete_file', filename=file) }}" class="d" onclick="return confirm('Are you sure？')">Delete</a>#}
+{#                <a href="{{ url_for('generate_qr', filename=file) }}" class="d" target="_blank">View code</a>#}
+{##}
+{#            </li>#}
+{#        {% else %}#}
+{#            <li>Nothing</li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
+{#    <a  href="{{ url_for('file_list') }}">File list</a>#}
+{#    </ul>#}
+{#    </div>#}
+{#{% endblock %}#}
 {% extends "base.html" %}
 
-{% block title %}HOME{% endblock %}
+{% block title %}Cloud Disk Management System{% endblock %}
 
 {% block content %}
     <div>
-    <h1 class="welcome">Welcome，{{ username }}!!!</h1>
-    <p class="sentence">Already!</p>
+        <h1 class="welcome">Welcome，{{ username }}!!!</h1>
+        <p class="sentence">Already logged in!</p>
 
-    <!-- 文件上传表单 -->
-    <form id = "up1" action="/upload" method="post" enctype="multipart/form-data">
-        <input id = "select_file" type="file" name="file" value="Please select files" required>
-        <input id= "sub" type="submit" value="upload the file" required>
-    </form>
-    <ul class="file_list">
-    <a  href="{{ url_for('file_list') }}">File list</a>
-    </ul>
+        <!-- 文件上传表单 -->
+        <form id="up1" action="/upload" method="post" enctype="multipart/form-data">
+            <input id="select_file" type="file" name="file" required>
+            <input id="sub" type="submit" value="Upload File">
+        </form>
+
+        <!-- 文件列表 -->
+        <h2 class = "f_l">File List</h2>
+        <ul class="file_list">
+{#            {% if files %}#}
+                {% for file in files %}
+                    <li class="pie">
+                        {{ file }}
+                        <a href="{{ url_for('download_file', filename=file) }}" class="d">Download</a>
+                        <a href="{{ url_for('delete_file', filename=file) }}" class="d" onclick="return confirm('Are you sure?')">Delete</a>
+                        <a href="{{ url_for('generate_qr', filename=file) }}" class="d" target="_blank">View QR Code</a>
+                    </li>
+                {% endfor %}
+
+{#            {% endif %}#}
+        </ul>
     </div>
 {% endblock %}

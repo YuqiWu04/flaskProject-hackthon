@@ -210,12 +210,12 @@ div {
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
-.file_list{
-
-    background-color: #0056b3;
 
 
-}
+/*    background-color: #0056b3;*/
+
+
+/*}*/
 .file_list a{
     text-decoration: none;
     flex: 1;
@@ -239,6 +239,9 @@ div {
     font-size: 18px;
     transition: color 0.3s;
 }
+.d:hover{
+    color:navajowhite ;
+}
 #fi{
     text-align: center;
     color:navajowhite;
@@ -257,7 +260,7 @@ div {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 .pie:hover{
-    background-color: #0056b3;
+    background-color: deepskyblue;
 }
 #select_file{
     width:100%;
@@ -273,4 +276,10 @@ div {
     margin: 0 auto;
     border: 1px solid #ced4da;
     border-radius: 5px;
+}
+.f_l{
+    text-align: center;
+    color:burlywood;
+    font-size: 32px;
+    line-height: 64px;
 }

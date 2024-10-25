@@ -83,13 +83,14 @@ from botocore.client import Config as BotoConfig
 #
 # if __name__ == '__main__':
 #     app.run(debug=True)
-from flask import Flask, request, redirect, render_template, flash, url_for, session, send_file
+from flask import Flask, request, redirect, render_template, flash, url_for, session, send_file, g
 import os
 import boto3
 from botocore.client import Config as BotoConfig
 from werkzeug.utils import secure_filename  # 确保文件名安全
 from config import Config
 import qrcode
+
 
 app = Flask(__name__)
 app.config.from_object(Config)  # 从配置文件加载配置
@@ -120,7 +121,7 @@ def login():
         if username in users and users[username] == password:
             session['username'] = username  # 登录成功，保存会话信息
             flash('Successfully logged in')
-            return redirect(url_for('index'))
+            return render_template('index.html',files=file_list())
         else:
             flash('Error!')
             return redirect(url_for('login'))
@@ -131,10 +132,41 @@ def login():
 # 主页路由
 @app.route('/')
 def index():
+    g.isLogin = False
     if 'username' in session:
         return render_template('index.html', username=session['username'])
+    try:
+        print(12333333)
+        # 获取存储桶中的文件列表
+        response = s3_client.list_objects_v2(Bucket=app.config['WASABI_BUCKET_NAME'])
+        files = [obj['Key'] for obj in response.get('Contents', []) if 'Key' in obj]
+    except Exception as e:
+        flash(f"Error retrieving file list: {str(e)}")
+        files = []
 
+    # 将文件列表传递给模板进行渲染
+    print(files)
+    # if not g.isLogin:
     return redirect(url_for('login'))
+    # else:
+    #     return render_template("index.html", files=files)
+    # return redirect(url_for('login'))
+
+
+def file_list():
+    try:
+        print(12333333)
+        # 获取存储桶中的文件列表
+        response = s3_client.list_objects_v2(Bucket=app.config['WASABI_BUCKET_NAME'])
+        files = [obj['Key'] for obj in response.get('Contents', []) if 'Key' in obj]
+    except Exception as e:
+        flash(f"Error retrieving file list: {str(e)}")
+        files = []
+
+    # 将文件列表传递给模板进行渲染
+    print(files)
+    # return render_template("index.html", files=files)
+    return files
 
 # 用户登出
 @app.route('/logout')
@@ -188,17 +220,8 @@ def upload_file():
     return redirect(url_for('index'))
 
 
-@app.route('/files')
-def file_list():
-    try:
-        # 获取存储桶中的文件列表
-        response = s3_client.list_objects_v2(Bucket=app.config['WASABI_BUCKET_NAME'])
-        files = [obj['Key'] for obj in response.get('Contents', [])]  # 获取文件名
-    except Exception as e:
-        flash(f"Error retrieving file list: {str(e)}")
-        files = []
 
-    return render_template('files.html', files=files)
+
 
 from flask import send_from_directory
 
