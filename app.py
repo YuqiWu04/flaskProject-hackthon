@@ -217,7 +217,7 @@ def upload_file():
         except Exception as e:
             flash(f'Fail: {str(e)}')
 
-    return redirect(url_for('index'))
+    return render_template('index.html',files=file_list())
 
 
 
@@ -225,10 +225,47 @@ def upload_file():
 
 from flask import send_from_directory
 
+def download(file_name):
+    try:
+        s3_client.download_file("mybucket2025", file_name, f"/users/yukey/downloads/{file_name}")
+        print(f"File {file_name} has been downloaded to /users/yukey/downloads")
+    except Exception as e:
+        print(f"Error downloading file: {e}")
+
 @app.route('/download/<filename>')
 def download_file(filename):
-    directory = '/Users/yukey/Desktop/files backup'
-    return send_from_directory(directory, filename, as_attachment=True)
+    local_directory = '/Users/yukey/downloads'  # 本地保存文件的目录
+    download(filename)
+
+    # 检查文件是否在本地目录中存在
+    if os.path.exists(os.path.join(local_directory, filename)):
+        try:
+            # 从本地目录提供下载
+            return send_from_directory(local_directory, filename, as_attachment=True)
+        except Exception as e:
+            flash(f"Error retrieving local file: {str(e)}")
+            return render_template('index.html',files=file_list())
+
+    # 文件不存在时返回一个错误消息
+    flash("The requested file does not exist.")
+    return render_template('index.html',files=file_list())  # 或者可以返回一个自定义的404页面
+    # else:
+    #     try:
+    #         # 如果本地没有文件，则从Wasabi云存储中下载
+    #         # 生成预签名URL，设置有效期为1小时
+    #         url = s3_client.generate_presigned_url(
+    #             'get_object',
+    #             Params={
+    #                 'Bucket': app.config['WASABI_BUCKET_NAME'],
+    #                 'Key': filename
+    #             },
+    #             ExpiresIn=3600
+    #         )
+    #         # 重定向到预签名URL，开始文件下载
+    #         return redirect(url)
+    #     except Exception as e:
+    #         flash(f"Error generating download link from Wasabi: {str(e)}")
+    #         return redirect(url_for('index'))
 
 @app.route('/delete/<filename>')
 def delete_file(filename):
@@ -238,12 +275,12 @@ def delete_file(filename):
         flash(f"{filename} already delete")
     except Exception as e:
         flash(f"Error: {e}")
-    return redirect(url_for('file_list'))
+    return render_template('index.html',files=file_list())
 
 @app.route('/generate_qr/<filename>')
 def generate_qr(filename):
     # 生成二维码的内容
-    qr_content = f'https://s3.ap-southeast-1.wasabisys.com/{filename}'  # 确保这里的 URL 是正确的
+    qr_content = f'{filename}'  # 确保这里的 URL 是正确的
 
     # 生成二维码图像
     qr = qrcode.QRCode(
